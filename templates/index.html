@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notepad Tracker</title>
+</head>
+
+<body>
+    <h1>Notepad Tracker</h1>
+
+    <label for="filePath">File path:</label>
+    <input
+        type="text"
+        id="filePath"
+        size="80"
+        placeholder="C:\Users\brpra\Documents\notes.txt"
+    >
+
+    <button onclick="saveFile()">Save</button>
+
+    <br><br>
+
+    <textarea
+        id="editor"
+        rows="25"
+        cols="100"
+        placeholder="Start writing your notes here..."
+    ></textarea>
+
+    <p id="status"></p>
+
+    <script>
+        async function saveFile() {
+            const filePath = document.getElementById("filePath").value;
+            const content = document.getElementById("editor").value;
+            const status = document.getElementById("status");
+
+            const response = await fetch("/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    file_path: filePath,
+                    content: content
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                status.textContent = result.message;
+            } else {
+                status.textContent = result.error;
+            }
+        }
+    </script>
+</body>
+</html>
